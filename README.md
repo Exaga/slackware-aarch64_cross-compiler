@@ -1,5 +1,8 @@
 # Slackware ARM cross-compiler Bash script README
 
+This script is also available from the SLackDocs Project: \
+https://docs.slackware.com/howtos:hardware:arm:gcc-10.x_aarch64_cross-compiler
+
 This script downloads RPi Linux kernel source and the required binaries, \
 and configures, builds, patches, and installs a gcc 10.2.x aarch64-linux \
 cross-compiler on Slackware ARM current running on a Raspberry Pi 3/4.
