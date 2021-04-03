@@ -84,7 +84,7 @@
 # other Linux distributions and hardware but it has not been tested and
 # therefore cannot be verified. It may be freely distributed, copied, 
 # modified, or plagiarised in the hope that it will be of some use towards
-# the goal of Slackware AArch64. 
+# building software for Slackware AArch64. 
 #
 ### Resource(s) ###
 # http://www.slackware.com

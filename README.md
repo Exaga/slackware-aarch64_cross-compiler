@@ -72,7 +72,7 @@ development towards a Slackware AArch64 port. This script may work on \
 other Linux distributions and hardware but it has not been tested and \
 therefore cannot be verified. It may be freely distributed, copied, \
 modified, or plagiarised in the hope that it will be of some use towards \
-the building software for Slackware AArch64. 
+building software for Slackware AArch64. 
 
 Edit the INSTALL_PATH variable within the script code before you run this \
 script. This is the location where the cross-compiler will be installed on \
