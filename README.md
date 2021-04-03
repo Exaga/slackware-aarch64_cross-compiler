@@ -41,11 +41,11 @@ thing to make sure is the release dates of gcc and glibc versions being as \
 close as possible.
 
 binutils - https://ftp.gnu.org/gnu/binutils/ \
-cloog - ftp://gcc.gnu.org/pub/gcc/infrastructure/ \
+cloog - http://gcc.gnu.org/pub/gcc/infrastructure/ \
 gcc - https://ftp.gnu.org/gnu/gcc/ \
 glibc - https://ftp.gnu.org/gnu/glibc/ \
 gmp - https://ftp.gnu.org/gnu/gmp/ \
-isl - ftp://gcc.gnu.org/pub/gcc/infrastructure/ \
+isl - http://gcc.gnu.org/pub/gcc/infrastructure/ \
 mpfr - https://ftp.gnu.org/gnu/mpfr/ \
 mpc - https://ftp.gnu.org/gnu/mpc/ \
  
