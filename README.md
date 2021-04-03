@@ -1,6 +1,6 @@
 # Slackware ARM cross-compiler Bash script README
 
-This script is also available from the SLackDocs Project: \
+This script is also available from the SlackDocs Project: \
 https://docs.slackware.com/howtos:hardware:arm:gcc-10.x_aarch64_cross-compiler
 
 This script downloads RPi Linux kernel source and the required binaries, \
