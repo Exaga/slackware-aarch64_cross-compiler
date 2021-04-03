@@ -75,8 +75,8 @@ modified, or plagiarised in the hope that it will be of some use towards \
 the goal of Slackware AArch64. 
 
 Edit the INSTALL_PATH variable within the script code before you run this \
-script. This the location where you want the cross-compiler to be installed \
-on your system.
+script. This is the location where the cross-compiler will be installed on \
+your system.
 ```
 # Installation directory - edit INSTALL_PATH as required
 INSTALL_PATH=/tmp/.gcc-cross
