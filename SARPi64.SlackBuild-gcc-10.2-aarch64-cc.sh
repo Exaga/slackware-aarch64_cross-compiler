@@ -5,6 +5,8 @@
 #
 # SARPi64.SlackBuild-gcc-10.2.0-aarch64-cc [v3.0] - 2020-12-29
 #
+# Copyright (c) 2020-2021 Exaga - SARPi Project - sarpi.penthux.net
+#
 # 2020-12-29 by Exaga   -   v3.0   -  gcc-10.x
 # 2019-07-10 by Exaga   -   v2.0   -  gcc-9.x
 # 2016-12-17 by Exaga 	-   v1.0   -  gcc-5.x
