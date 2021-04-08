@@ -5,8 +5,6 @@
 #
 # SARPi64.SlackBuild-gcc-10.2.0-aarch64-cc [v3.0] - 2020-12-29
 #
-# Copyright (c) 2020-2021 Exaga - SARPi Project - sarpi.penthux.net
-#
 # 2020-12-29 by Exaga   -   v3.0   -  gcc-10.x
 # 2019-07-10 by Exaga   -   v2.0   -  gcc-9.x
 # 2016-12-17 by Exaga 	-   v1.0   -  gcc-5.x
@@ -65,12 +63,9 @@
 # mpc - https://ftp.gnu.org/gnu/mpc/
 #
 ### IMPORTANT! ###
-# Before running this build script, export the INSTALL_PATH on your 
-# root 'user'. Also do this each time you (re)boot your system so that
-# the location of the cross-compiler is always the first item in your
-# $PATH. You can also add this command to your ~/.profile as a more
-# permanent fixture. It's up to you if/how you do it. Example export
-# PATH command: 
+# This script will export the INSTALL_PATH variable into the $PATH. 
+# The PATH of the cross-compiler should always be the first item in 
+# the $PATH. PATH command: 
 # 
 # ~# export PATH=/tmp/.gcc-cross/bin:$PATH
 #
@@ -84,7 +79,7 @@
 # other Linux distributions and hardware but it has not been tested and
 # therefore cannot be verified. It may be freely distributed, copied, 
 # modified, or plagiarised in the hope that it will be of some use towards
-# building software for Slackware AArch64. 
+# the goal of Slackware AArch64. 
 #
 ### Resource(s) ###
 # http://www.slackware.com
@@ -167,12 +162,10 @@ echo "Starting $PRGNAM build ..."
 # Command: export PATH=/tmp/.gcc-cross/bin:$PATH
 echo "Checking $ARCH_TARGET $INSTALL_PATH/bin \$PATH ..."
 if [[ ! "$PATH" =~ $INSTALL_PATH ]]; then
-  echo "ERROR: $INSTALL_PATH/bin NOT found in \$PATH. Stopping build ..."
-  echo "Use command: export PATH=$INSTALL_PATH/bin:\$PATH"
-  exit 
+    export PATH=/"${INSTALL_PATH}"/bin:$PATH 
 # echo -e $INSTALL_PATH/bin:$(cat $PATH) > $PATH || exit 1
 else
-  echo "Found $INSTALL_PATH\/bin in \$PATH : OK! ... "
+    echo "Found $INSTALL_PATH\/bin in \$PATH : OK! ... "
 fi
 
 # Prerequisite packages
@@ -378,3 +371,4 @@ fi
 exit 0
 
 #EOF<*>
+
