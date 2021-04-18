@@ -66,7 +66,7 @@ To check that the INSTALL_PATH is in your $PATH use this command:
 
 ~# echo $PATH
 
- ### Usage ### 
+ ### Configure INSTALL_PATH ### 
 This script was created on Slackware ARM and intended for research and \
 development towards a Slackware AArch64 port. This script may work on \
 other Linux distributions and hardware but it has not been tested and \
@@ -81,3 +81,13 @@ your system.
 # Installation directory - edit INSTALL_PATH as required
 INSTALL_PATH=/tmp/.gcc-cross
 ```
+ ### Compiling ### 
+ 
+ Using the cross-compiler to build, for example:
+ ```
+ make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux- LOCALVERSION="-YOUR_LOCAL_VERSION" Image
+ make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux- dtbs
+ make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux- headers_install INSTALL_HDR_PATH="/YOUR/HEADER/INSTALL/PATH/"
+ make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux- LOCALVERSION="-YOUR_LOCAL_VERSION" modules
+ make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux- LOCALVERSION="-YOUR_LOCAL_VERSION" modules_install
+ ```
