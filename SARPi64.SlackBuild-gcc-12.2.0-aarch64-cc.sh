@@ -19,7 +19,7 @@
 # and configures, builds, patches, and installs a gcc 12.2.x aarch64-linux 
 # cross-compiler on Slackware ARM current running on a Raspberry Pi 3/4.
 #
-### Usage & Installation ###
+### Installation & Usage ###
 # You should create a 'build-dir' folder and copy this script to it 
 # (e.g. /tmp/build-dir) and run it from there as a 'root' user. 
 #
@@ -75,13 +75,34 @@
 # 
 # ~# echo $PATH
 #
-### Usage ###
-# This script was created on Slackware ARM and intended for research and 
-# development towards a Slackware AArch64 port. This script may work on 
-# other Linux distributions and hardware but it has not been tested and
-# therefore cannot be verified. It may be freely distributed, copied, 
-# modified, or plagiarised in the hope that it will be of some use towards
-# the goal of Slackware AArch64. 
+### Disclaimer ###
+# This script was created on Slackware ARM and intended for development 
+# and testing on Slackware AArch64. This script may work on other Linux 
+# distributions and hardware but it has not been tested and therefore 
+# cannot be verified. It may be freely distributed, copied, modified, or 
+# plagiarised in the hope that it will be useful towards supporting 
+# Slackware AArch64. 
+#
+# Copyright 2016-2022 Exaga, sarpi.penthux.net
+# All rights reserved.
+#
+#   Permission to use, copy, modify, and distribute this software for
+#   any purpose with or without fee is hereby granted, provided that
+#   the above copyright notice and this permission notice appear in all
+#   copies.
+#
+#   THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+#   WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#   MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+#   IN NO EVENT SHALL THE AUTHORS AND COPYRIGHT HOLDERS AND THEIR
+#   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+#   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+#   USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+#   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+#   OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+#   OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+#   SUCH DAMAGE.
 #
 ### Resource(s) ###
 # http://www.slackware.com
@@ -109,8 +130,8 @@ ISL_VERSION=isl-0.24
 MPFR_VERSION=mpfr-4.1.0
 MPC_VERSION=mpc-1.2.1
 
-# RPi GitHub Linux source - working branch [e.g. rpi-4.14.y | rpi-4.19.y | rpi-5.2.y ] 
-DEV_BRANCH=rpi-5.18.y
+# RPi GitHub Linux source - working branch [e.g. rpi-4.19.y | rpi-5.15.y | rpi-5.19.y ] 
+DEV_BRANCH=rpi-5.19.y
 
 
 #############################################################################
