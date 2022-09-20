@@ -1,10 +1,11 @@
 #! /bin/bash
 
 ##############################################################################
-# Slackware ARM gcc-11.2.0 aarch64 cross-compiler for Raspberry Pi
+# Slackware ARM gcc-12.2.0 aarch64 cross-compiler for Raspberry Pi
 #
-# SARPi64.SlackBuild-gcc-11.2.0-aarch64-cc [v1.4] - 2021-09-25
+# SARPi64.SlackBuild-gcc-12.2.0-aarch64-cc [v1.5] - 2022-09-17
 #
+# 2022-06-16 by Exaga   -   v1.5   -  gcc-12.x
 # 2021-09-25 by Exaga   -   v1.4   -  gcc-11.x
 # 2020-12-29 by Exaga   -   v1.3   -  gcc-10.x
 # 2019-07-10 by Exaga   -   v1.2   -  gcc-9.x
@@ -15,15 +16,15 @@
 ##############################################################################
 #
 # This script downloads RPi Linux kernel source and the required binaries, 
-# and configures, builds, patches, and installs a gcc 11.2.x aarch64-linux 
+# and configures, builds, patches, and installs a gcc 12.2.x aarch64-linux 
 # cross-compiler on Slackware ARM current running on a Raspberry Pi 3/4.
 #
 ### Usage & Installation ###
 # You should create a 'build-dir' folder and copy this script to it 
 # (e.g. /tmp/build-dir) and run it from there as a 'root' user. 
 #
-# ~# chmod +x SARPi64.SlackBuild-gcc-11.2.0-aarch64-cc.sh
-# ~# ./SARPi64.SlackBuild-gcc-11.2.0-aarch64-cc.sh
+# ~# chmod +x SARPi64.SlackBuild-gcc-12.2.0-aarch64-cc.sh
+# ~# ./SARPi64.SlackBuild-gcc-12.2.0-aarch64-cc.sh
 #
 # You may install the cross-compiler anywhere you like, as long as it can be 
 # accessed by a normal user (i.e. not 'root'). The default is /tmp/.gcc-cross 
@@ -99,17 +100,17 @@
 INSTALL_PATH=/tmp/.gcc-cross
 
 # Required build packages-versions [* newer versions may exist]
-BINUTILS_VERSION=binutils-2.37
+BINUTILS_VERSION=binutils-2.39
 CLOOG_VERSION=cloog-0.18.1
-GCC_VERSION=gcc-11.2.0
-GLIBC_VERSION=glibc-2.34
+GCC_VERSION=gcc-12.2.0
+GLIBC_VERSION=glibc-2.36
 GMP_VERSION=gmp-6.2.1
-ISL_VERSION=isl-0.18
+ISL_VERSION=isl-0.24
 MPFR_VERSION=mpfr-4.1.0
 MPC_VERSION=mpc-1.2.1
 
 # RPi GitHub Linux source - working branch [e.g. rpi-4.14.y | rpi-4.19.y | rpi-5.2.y ] 
-DEV_BRANCH=rpi-5.14.y
+DEV_BRANCH=rpi-5.18.y
 
 
 #############################################################################
@@ -284,13 +285,13 @@ make $PARALLEL_JOBS all-gcc
 echo "Installing gcc $ARCH_TARGET cross-compiler to $INSTALL_PATH ..."
 make $PARALLEL_JOBS install-gcc
 
-# create gcc-11.2.0 libsanitizer asan_linux-cpp.patch file
+# create gcc-12.2.0 libsanitizer asan_linux-cpp.patch file
 cd "$CWD"
 touch asan_linux-cpp.patch
 cat << EOF > asan_linux-cpp.patch
---- gcc-11.2.0/libsanitizer/asan/asan_linux.cpp	2021-07-28 07:55:09.172313645 +0100
-+++ asan_linux.cpp	2021-09-25 12:35:18.000000000 +0100
-@@ -76,6 +76,10 @@
+--- gcc-12.2.0/libsanitizer/asan/asan_linux.cpp	2022-09-17 08:36:38.000000000 +0100
++++ asan_linux.cpp	2022-09-17 08:37:30.000000000 +0100
+@@ -77,6 +77,10 @@
  asan_rt_version_t  __asan_rt_version;
  }
  
@@ -304,7 +305,7 @@ cat << EOF > asan_linux-cpp.patch
 
 EOF
 
-# Patch gcc-11.2.x/libsanitizerasan/asan_linux.cpp [or the build will fail]
+# Patch gcc-12.2.x/libsanitizerasan/asan_linux.cpp [or the build will fail]
 ASANLINUXCC=$CWD/$GCC_VERSION/libsanitizer/asan/asan_linux.cpp
 if [ ! -f "$ASANLINUXCC".orig ]; then
   echo "Patching $ASANLINUXCC ..."
@@ -372,3 +373,4 @@ fi
 exit 0
 
 #EOF<*>
+
