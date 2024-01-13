@@ -4,20 +4,20 @@ This script is also available from the SlackDocs Project: \
 https://docs.slackware.com/howtos:hardware:arm:gcc-11.x_aarch64_cross-compiler
 
 This script downloads RPi Linux kernel source and the required binaries, \
-and configures, builds, patches, and installs a gcc 12.2.x aarch64-linux \
+and configures, builds, patches, and installs a gcc 13.2.x aarch64-linux \
 cross-compiler on Slackware ARM current running on a Raspberry Pi 3/4.
 
 ## Usage & Installation ###
 You should create a 'build-dir' folder and copy this script to it \
 (e.g. /tmp/build-dir) and run it from there as a 'root' user. 
 
-~# chmod +x SARPi64.SlackBuild-gcc-12.2.0-aarch64-cc.sh \
-~# ./SARPi64.SlackBuild-gcc-12.2.0-aarch64-cc.sh
+~# chmod +x SARPi64.SlackBuild-gcc-13.2.0-aarch64-cc.sh \
+~# ./SARPi64.SlackBuild-gcc-13.2.0-aarch64-cc.sh
 
 You may install the cross-compiler anywhere you like, as long as it can be \
 accessed by a normal user (i.e. not 'root'). The default is /tmp/.gcc-cross \
 but if this is not suitable then set your own installation directory with \
-INSTALL_PATH variable, in the settings below.  
+INSTALL_PATH variable, in the script settings.  
 
 Ensure 'bison', 'flex', 'gawk', and 'git' are installed on your system \
 before running this script! Use these commands to check:
