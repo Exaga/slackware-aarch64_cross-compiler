@@ -1,9 +1,10 @@
 #! /bin/bash
 
 ##############################################################################
-# Slackware ARM gcc-13.2.0 aarch64 cross-compiler for Raspberry Pi
 #
-# SARPi64.SlackBuild-gcc-13.2.0-aarch64-cc [v1.6] - 2022-09-17
+# Slackware ARM gcc-13.2.0 AArch64 cross-compiler for Raspberry Pi
+#
+# SARPi64.SlackBuild-gcc-13.2.0-aarch64-cc [v1.6] - 2023-10-14
 #
 # 2023-10-14 by Exaga   -   v1.6   -  gcc-13.2.x
 # 2022-06-16 by Exaga   -   v1.5   -  gcc-12.x
@@ -17,14 +18,14 @@
 ##############################################################################
 #
 # This script downloads RPi Linux kernel source and the required binaries, 
-# and configures, builds, patches, and installs a gcc 13.2.x aarch64-linux 
-# cross-compiler on Slackware ARM current running on a Raspberry Pi 3/4.
+# and configures, builds, patches, and installs a gcc 13.2.x AArch64-linux 
+# cross-compiler on Slackware ARM running on a Raspberry Pi 3/4/5.
 #
 ### Installation & Usage ###
+#
 # You should create a 'build-dir' folder and copy this script to it 
 # (e.g. /tmp/build-dir) and run it from there as a 'root' user. 
 #
-# ~# chmod +x SARPi64.SlackBuild-gcc-13.2.0-aarch64-cc.sh
 # ~# ./SARPi64.SlackBuild-gcc-13.2.0-aarch64-cc.sh
 #
 # You may install the cross-compiler anywhere you like, as long as it can be 
@@ -41,15 +42,21 @@
 # ~# whereis flex
 #
 # If you need to install any of the packages above [* check for updates!]:
-# http://slackware.uk/slackwarearm/slackwarearm-current/slackware/a/gawk*.txz  
-# http://slackware.uk/slackwarearm/slackwarearm-current/slackware/d/git*.txz 
-# http://slackware.uk/slackwarearm/slackwarearm-current/slackware/d/bison*.txz 
-# http://slackware.uk/slackwarearm/slackwarearm-current/slackware/d/flex*.txz
+# http://slackware.uk/slackwarearm/slackwarearm-15.0/slackware/a/gawk*.txz  
+# http://slackware.uk/slackwarearm/slackwarearm-15.0/slackware/d/git*.txz 
+# http://slackware.uk/slackwarearm/slackwarearm-15.0/slackware/d/bison*.txz 
+# http://slackware.uk/slackwarearm/slackwarearm-15.0/slackware/d/flex*.txz
 #
 # NB: The gcc package you compile should match your currently installed gcc 
 # version. Use this command to check your current gcc version:
 #
 # ~# gcc --version
+#
+# Copy the Linux kernel-headers package to /tmp/usr and delete asm directory.
+# Then symlink it to asm-armv8 directory:
+#
+# root@jook:/tmp/usr/include# rm -rf asm
+# root@jook:/tmp/usr/include# ln -sf asm-armv8 asm
 #
 # More recent gcc packages-versions may exist. You may wish to install them. 
 # NB: if you use newer packages - glibc version _MUST_ suit gcc version! The
@@ -57,11 +64,11 @@
 # close as possible.
 #
 # binutils - https://ftp.gnu.org/gnu/binutils/
-# cloog -https://gcc.gnu.org/pub/gcc/infrastructure/
+# cloog - ftp://gcc.gnu.org/pub/gcc/infrastructure/
 # gcc - https://ftp.gnu.org/gnu/gcc/
 # glibc - https://ftp.gnu.org/gnu/glibc/
 # gmp - https://ftp.gnu.org/gnu/gmp/
-# isl - https://gcc.gnu.org/pub/gcc/infrastructure/
+# isl - ftp://gcc.gnu.org/pub/gcc/infrastructure/
 # mpfr - https://ftp.gnu.org/gnu/mpfr/
 # mpc - https://ftp.gnu.org/gnu/mpc/
 #
@@ -77,6 +84,7 @@
 # ~# echo $PATH
 #
 ### Disclaimer ###
+#
 # This script was created on Slackware ARM and intended for development 
 # and testing on Slackware AArch64. This script may work on other Linux 
 # distributions and hardware but it has not been tested and therefore 
@@ -84,13 +92,12 @@
 # plagiarised in the hope that it will be useful towards supporting 
 # Slackware AArch64. 
 #
-# Copyright 2016-2022 Exaga, sarpi.penthux.net
-# All rights reserved.
+#   Copyright (c) 2016-2024 Exaga - sarpi.penthux.net
 #
 #   Permission to use, copy, modify, and distribute this software for
 #   any purpose with or without fee is hereby granted, provided that
-#   the above copyright notice and this permission notice appear in all
-#   copies.
+#   the above copyright notice and this disclaimer notice appear in 
+#   all copies. All rights reserved.
 #
 #   THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
 #   WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -118,25 +125,21 @@
 ##############################################################################
 
 
-#############################################################################
-##                         SETTINGS AND VERSIONS                           ##
-#############################################################################
-
 # Installation directory - edit INSTALL_PATH as required
 INSTALL_PATH=/tmp/.gcc-cross
 
-# Required build packages versions [* newer versions may exist]
+# Required build packages-versions [* newer versions may exist]
 BINUTILS_VERSION=binutils-2.41
 CLOOG_VERSION=cloog-0.18.1
 GCC_VERSION=gcc-13.2.0
 GLIBC_VERSION=glibc-2.38
-GMP_VERSION=gmp-6.3.0
+GMP_VERSION=gmp-6.2.1
 ISL_VERSION=isl-0.24
-MPFR_VERSION=mpfr-4.2.1
-MPC_VERSION=mpc-1.3.1
+MPFR_VERSION=mpfr-4.1.0
+MPC_VERSION=mpc-1.2.1
 
 # RPi GitHub Linux source - working branch [e.g. rpi-5.15.y | rpi-5.19.y | rpi-6.1.y  ] 
-DEV_BRANCH=rpi-6.1.y
+DEV_BRANCH=rpi-6.6.y
 
 
 #############################################################################
@@ -152,20 +155,34 @@ IFS=$'\n\t'
 
 # Build variables
 PRGNAM=SARPi64.SlackBuild-aarch64-cc
-ARCH_TARGET=aarch64-linux  
+ARCH_TARGET=aarch64-linux
 LINUX_ARCH=arm64
 QUADLET=aarch64-unknown-linux-gnu # aarch64-arm-none-eabi
 LINUX_FLAVOUR=linux-rpi 
 RPI_GITURL_LINUX=https://github.com/raspberrypi
 BUILD_LANGUAGES="--enable-languages=c,c++" # --enable-languages=all,ada,c,c++,fortran,go,jit,lto,objc,obj-c++
-ALT_CONFIG_OPTIONS="--disable-multilib" # --disable-threads --disable-shared --disable-multiarch
+ALT_CONFIG_OPTIONS="--disable-multilib"
+BLD_CONFIG_OPTIONS="--disable-multilib --disable-threads --disable-shared --disable-multiarch -mcpu=cortex-a53+crc -mtune=cortex-a53 --disable-fixincludes --with-system-zlib"  
 TEST_CONFIG_OPTIONS="--with-arch=armv8-a --with-tune=cortex-a72 --with-fpu=vfpv3-d16 --with-float=hard" # 
-RPI4_CONFIG_OPTIONS="--prefix=$INSTALL_PATH --target=arm-linux-gnueabihf --enable-languages=c,c++ --with-arch=armv8-a --with-fpu=vfp --with-float=hard --disable-multilib" # 
-PARALLEL_JOBS=-j4 # https://www.gnu.org/software/make/manual/html_node/Parallel.html
+RPI_CONFIG_OPTIONS="--prefix=$INSTALL_PATH --target=arm-linux-gnueabihf --enable-languages=c,c++ --with-arch=armv8-a --with-fpu=vfp --with-float=hard --disable-multilib" # 
+# https://www.gnu.org/software/make/manual/html_node/Parallel.html
+PARALLEL_JOBS="-j$(nproc)" 
 CWD=$(pwd)
 
 # Define CONFIG_OPTIONS for build
 CONFIG_OPTIONS=$ALT_CONFIG_OPTIONS
+
+# Set bulletin
+set -e
+
+# INSTALL_PATH needs to be at the front of $PATH
+# Command: export PATH=/tmp/.gcc-cross/bin:$PATH
+echo "Checking $ARCH_TARGET $INSTALL_PATH/bin \$PATH ..."
+if [[ ! "$PATH" =~ $INSTALL_PATH ]]; then
+    export PATH=/"${INSTALL_PATH}"/bin:$PATH 
+else
+    echo "Found $INSTALL_PATH\/bin in \$PATH : OK! ... "
+fi
 
 # Uncomment to log EVERYTHING during build process [** WARNING! HUGE log filesize! **]
 #LOGFLE=${PRGNAM}_build_$(date +"%F").log
@@ -186,16 +203,6 @@ echo
 sarpiSP64
 echo "Starting $PRGNAM build ..."
 
-# INSTALL_PATH needs to be at the front of $PATH
-# Command: export PATH=/tmp/.gcc-cross/bin:$PATH
-echo "Checking $ARCH_TARGET $INSTALL_PATH/bin \$PATH ..."
-if [[ ! "$PATH" =~ $INSTALL_PATH ]]; then
-    export PATH=/"${INSTALL_PATH}"/bin:$PATH 
-# echo -e $INSTALL_PATH/bin:$(cat $PATH) > $PATH || exit 1
-else
-    echo "Found $INSTALL_PATH\/bin in \$PATH : OK! ... "
-fi
-
 # Prerequisite packages
 BISON_REQ=$(which bison)
 FLEX_REQ=$(which flex)
@@ -206,29 +213,33 @@ GIT_REQ=$(which git)
 if [ ! -e "$BISON_REQ" ]; then
   echo "ERROR: bison not found!"
   echo "Install bison before you run this script!"
-  exit 1
+  exit 1;
 elif [ ! -e "$FLEX_REQ" ]; then
   echo "ERROR: flex not found!"
   echo "Install flex before you run this script!"
-  exit 1
+  exit 1;
 elif [ ! -e "$GAWK_REQ" ]; then
   echo "ERROR: gawk not found!"
   echo "Install gawk before you run this script!"
-  exit 1
+  exit 1;
 elif [ ! -e "$GIT_REQ" ]; then
   echo "ERROR: git not found!"
   echo "Install git before you run this script!"
-  exit 1
+  exit 1;
 else
   echo "Prerequisite packages are installed ..."	
 fi
+
+# Delete build-binutils directory [if it exists]
+rm -rf build-binutils
+mkdir build-binutils
 
 # Download RPi kernel source ** this may take a while **
 cd "$CWD"
 echo "Checking kernel $DEV_BRANCH source ..."
 if [ ! -e $LINUX_FLAVOUR/Makefile ]; then
   echo "Downloading kernel $DEV_BRANCH source ..."
-  git clone --depth=1 $RPI_GITURL_LINUX/linux.git --branch $DEV_BRANCH $LINUX_FLAVOUR
+  git clone --branch $DEV_BRANCH --depth=1 $RPI_GITURL_LINUX/linux.git $LINUX_FLAVOUR
 fi
 cd $LINUX_FLAVOUR
 echo "Checking kernel $DEV_BRANCH branch for updates ..."
@@ -270,16 +281,19 @@ if [ ! -d "$CWD"/$CLOOG_VERSION ]; then
   tar -xvf $CLOOG_VERSION.tar.gz
 fi
 
-# Create symbolic links so gcc builds these dependencies automatically
+# Create symbolic links so gcc builds these dependencies. This can be done 
+# automagically by using the following command in gcc source dir: 
+# ./contrib/download_prerequisites
+#
 echo "Creating symbolic links in gcc ..."
 cd "$CWD"/$GCC_VERSION
-ln -sf ../$MPFR_VERSION mpfr
 ln -sf ../$GMP_VERSION gmp
+ln -sf ../$MPFR_VERSION mpfr
 ln -sf ../$MPC_VERSION mpc
 ln -sf ../$ISL_VERSION isl
 ln -sf ../$CLOOG_VERSION cloog
 
-# Create aarch64 cross-compiler install directory
+# Create AArch64 cross-compiler install directory
 echo "Creating $INSTALL_PATH directory ..."
 rm -rf $INSTALL_PATH
 mkdir -p $INSTALL_PATH
@@ -288,8 +302,6 @@ cd "$CWD"
 
 # Build binutils
 echo "Building binutils ..."
-rm -rf build-binutils
-mkdir build-binutils
 cd build-binutils
 ../$BINUTILS_VERSION/configure --prefix=$INSTALL_PATH --target=$ARCH_TARGET $CONFIG_OPTIONS
 make $PARALLEL_JOBS
@@ -306,7 +318,7 @@ cd "$CWD"
 echo "Building gcc $ARCH_TARGET C,C++ cross-compiler ..."
 mkdir -p build-gcc
 cd build-gcc
-../$GCC_VERSION/configure --prefix=$INSTALL_PATH --target=$ARCH_TARGET $BUILD_LANGUAGES $CONFIG_OPTIONS
+../$GCC_VERSION/configure --prefix=$INSTALL_PATH --target=$ARCH_TARGET $BUILD_LANGUAGES $CONFIG_OPTIONS --disable-libsanitizer
 make $PARALLEL_JOBS all-gcc
 echo "Installing gcc $ARCH_TARGET cross-compiler to $INSTALL_PATH ..."
 make $PARALLEL_JOBS install-gcc
@@ -315,8 +327,8 @@ make $PARALLEL_JOBS install-gcc
 cd "$CWD"
 touch asan_linux-cpp.patch
 cat << EOF > asan_linux-cpp.patch
---- gcc-13.2.0/libsanitizer/asan/asan_linux.cpp	2023-07-27 09:13:08.000000000 +0100
-+++ asan_linux-cpp.new 2023-10-15 14:36:04.000000000 +0100
+--- gcc-13.2.0/libsanitizer/asan/asan_linux.cpp	2023-10-15 19:29:43.000000000 +0100
++++ asan_linux-cpp.new	2023-10-16 08:33:44.000000000 +0100
 @@ -77,6 +77,10 @@
  asan_rt_version_t  __asan_rt_version;
  }
@@ -331,22 +343,21 @@ cat << EOF > asan_linux-cpp.patch
 
 EOF
 
-# Patch gcc-13.2.x/libsanitizerasan/asan_linux.cpp [or the build will fail]
+# Patch gcc-13.2.x/libsanitizerasan/asan_linux.cpp [for posterity]
 ASANLINUXCC=$CWD/$GCC_VERSION/libsanitizer/asan/asan_linux.cpp
 if [ ! -f "$ASANLINUXCC".orig ]; then
   echo "Patching $ASANLINUXCC ..."
-  patch -b "$ASANLINUXCC" asan_linux-cpp.patch || exit 1
+  patch -b "$ASANLINUXCC" asan_linux-cpp.patch || exit 1;
   sarpiSP64
   echo "$ASANLINUXCC has been PATCHED! ..."
   echo "Backup of original: $ASANLINUXCC.orig ..."
-  sleep 10
 fi
 
 # Build and install glibc's standard C library headers and startup files
 echo "Building glibc library headers ..."
 mkdir -p build-glibc
 cd build-glibc
-../$GLIBC_VERSION/configure --prefix=$INSTALL_PATH/$ARCH_TARGET --build="$MACHTYPE" --host=$ARCH_TARGET --target=$ARCH_TARGET --with-headers=$INSTALL_PATH/$ARCH_TARGET/include $CONFIG_OPTIONS libc_cv_forced_unwind=yes
+../$GLIBC_VERSION/configure --prefix=$INSTALL_PATH/$ARCH_TARGET --build="$MACHTYPE" --host=$ARCH_TARGET --target=$ARCH_TARGET $CONFIG_OPTIONS libc_cv_forced_unwind=yes
 make $PARALLEL_JOBS install-bootstrap-headers=yes install-headers
 make $PARALLEL_JOBS csu/subdir_lib
 echo "Installing glibc library headers ..."
@@ -364,19 +375,19 @@ make install-target-libgcc
 # Finish building glibc's standard C library and install it
 echo "Completing glibc C library ..."
 cd "$CWD"/build-glibc
-make $PARALLEL_JOBS
+make $PARALLEL_JOBS 
 echo "Installing glibc C library ..."
 make install
 
 # Finish building gcc's C++ library and install it
 echo "Completing glibc C++ library ..."
 cd "$CWD"/build-gcc
-make $PARALLEL_JOBS
+make $PARALLEL_JOBS 
 echo "Installing glibc C++ library ..."
 make install
 cd "$CWD"
 
-# Check status of aarch64-linux-gcc cross-compiler
+# Check status of AArch64-linux-gcc cross-compiler
 echo "Checking status of $ARCH_TARGET-gcc cross-compiler ..."
 ARCH_TARGET_STATUS=$(which $ARCH_TARGET-gcc)
 $ARCH_TARGET-gcc -v
@@ -385,7 +396,7 @@ if [ ! -e "$ARCH_TARGET_STATUS" ]; then
   echo "ERROR: $ARCH_TARGET-gcc not responding!"
   sarpiSP64
   echo "$(date +"%F %T") : $PRGNAM FAILED! ..."
-  exit 1
+  exit 1;
 else 
   # Done!
   echo "Verifying $ARCH_TARGET-gcc \$PATH ..."
@@ -396,7 +407,7 @@ else
 fi
 
 # 
-exit 0
+exit 0;
 
 #EOF<*>
 
